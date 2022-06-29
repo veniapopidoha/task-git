@@ -9,10 +9,19 @@ export const MainPage = () => {
 
   const [ users , setUsers ] = useState([]);
 
+  const headers = {
+    Authorization: `token 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`,
+  };
+
   const onFilter = (input = '') => {
     const inputValue = input.target.value.toLowerCase();
     if(inputValue.length) {
-      axios.get(`https://api.github.com/search/users?q=${inputValue}`)
+      axios.get(
+        `https://api.github.com/search/users?q=${inputValue}`,
+        {
+          headers,
+        }
+      )
       .then((response) => setUsers(response.data.items))
       .catch(error => console.error("Error: " + error))
     }
