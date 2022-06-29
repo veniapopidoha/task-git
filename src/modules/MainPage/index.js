@@ -27,7 +27,10 @@ export const MainPage = () => {
               <StyledLink to={`/profile?login=${user.login}`}>
                 <User key={index} user={user}></User>
               </StyledLink> 
-          )})};
+              
+          )})}
+          { users.length == 0 && <h1>Не існує такого користувача</h1> }
+        
         </InfoBlock>
       </Wrap>
   );

@@ -73,6 +73,7 @@ export const Profile = () => {
           {currentUserInfo.repository.map((repo = {}, index) => {
             return <Repo key={index} repo={repo}></Repo>
           }) };
+          { repository.length == 0 && <h2>Такий репозиторій не існує</h2>}
       </RepoBlock>
     </Wrap>
   );
