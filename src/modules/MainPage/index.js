@@ -10,7 +10,7 @@ export const MainPage = () => {
   const [ users , setUsers ] = useState([]);
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const onFilter = (input = '') => {
