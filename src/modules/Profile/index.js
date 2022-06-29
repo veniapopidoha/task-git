@@ -45,9 +45,6 @@ export const Profile = () => {
       .then((response) => setRepository(response.data.items))
       .catch(error => console.error("Error: " + error))
     }
-    else {
-      setRepository(currentUserInfo.repository)
-    }
   }
 
   
