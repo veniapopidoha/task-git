@@ -41,9 +41,12 @@ export const Profile = () => {
   const onFilter = (input = '') => {
     const inputValue = input.target.value.toLowerCase();
     if(inputValue.length) {
-      axios.get(`https://api.github.com/search/repositories?q=user:${userLogin}&${inputValue}+in:name`)
+      axios.get(`https://api.github.com/search/repositories?q=user:${userLogin}+${inputValue}+in:name`)
       .then((response) => setRepository(response.data.items))
       .catch(error => console.error("Error: " + error))
+    }
+    else {
+      setRepository(currentUserInfo.repository)
     }
   }
 
