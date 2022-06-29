@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Wrap = styled.div`
@@ -18,4 +19,9 @@ export const Search = styled.input`
   margin: 20px;
   width: 70%;
   height: 30px;
+`;
+
+export const StyledLink = styled(Link)`
+  color: #000;
+  text-decoration: 0;
 `;
