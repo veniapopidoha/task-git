@@ -25,11 +25,10 @@ export const Icon = styled.img`
 
 export const Name = styled.h1`
   padding: 10px 20px;
-`; 
+`;
 
 export const Repos = styled.h1`
   font-size: 17px;
-  
 `;
 
 export const StyledLink = styled(Link)`

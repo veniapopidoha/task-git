@@ -1,3 +1,4 @@
+import { DebounceInput } from 'react-debounce-input';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -15,7 +16,7 @@ export const InfoBlock = styled.div`
   box-sizing: border-box;
 `;
 
-export const Search = styled.input`
+export const Search = styled(DebounceInput)`
   margin: 20px;
   width: 70%;
   height: 30px;
