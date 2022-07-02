@@ -6,17 +6,25 @@ import axios from 'axios';
 
 export const User = ({ user, onUserClicked }) => {
   const [ userInfo , setUserInfo ] = useState([]);
-  const { login = '', avatar_url = '' } = user;
+  const { login = '', avatar_url = '',  } = user;
+  const headers = {
+    Authorization: 'token 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',
+  };
 
-  const getFullData = () => {
-    axios
-      .get(`https://api.github.com/users/${user.login}`)
+  const getFullData = async () => {
+    await axios
+      .get(
+        `https://api.github.com/users/${login}/repos`,
+        {
+          headers,
+        }
+        )
       .then((response) => setUserInfo(response.data))
   }
 
   useEffect(() => {
     getFullData();
-  }, []);
+  });
 
   return(
       <Wrap onClick={onUserClicked}>
@@ -24,7 +32,7 @@ export const User = ({ user, onUserClicked }) => {
           <Icon src={avatar_url}/>
           <Name>{login}</Name>
         </Wrapper>
-        <Repos>Repos: {userInfo.public_repos}</Repos>
+        <Repos>Repos: {userInfo.length}</Repos>
       </Wrap>
   );
 };

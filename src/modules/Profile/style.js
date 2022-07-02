@@ -13,6 +13,7 @@ export const Row = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 export const Block = styled.div`
@@ -29,6 +30,7 @@ export const Block = styled.div`
 export const Bio = styled.p`
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 `;
 
 export const Search = styled.input`
@@ -41,4 +43,15 @@ export const Search = styled.input`
 export const RepoBlock = styled.div`
   max-height: 500px;
   overflow: scroll;
+`;
+
+export const Back = styled.button`
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  text-decoration: underline;
 `;
