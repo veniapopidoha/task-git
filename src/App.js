@@ -9,6 +9,8 @@ function App() {
   const defaultState = {
     input: '',
     loadedUsers: [],
+    loadedRepos: [],
+    allData: [],
   };
 
   const reducer = (state = defaultState, action) => {
@@ -17,6 +19,16 @@ function App() {
         return { ...state, input: action.payload };
       case 'LOADED_USERS':
         return { ...state, loadedUsers: action.payload };
+      case 'RESET_REPO':
+        return { ...state, allData: action.payload };
+      case 'LOADED_REPO':
+        return {
+          ...state,
+          loadedRepos: Array.from(state.allData).push.apply(
+            state.allData,
+            action.payload
+          ),
+        };
       default:
         return state;
     }

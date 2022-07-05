@@ -1,3 +1,4 @@
+import { DebounceInput } from 'react-debounce-input';
 import styled from 'styled-components';
 
 export const Wrap = styled.div`
@@ -33,7 +34,7 @@ export const Bio = styled.p`
   justify-content: center;
 `;
 
-export const Search = styled.input`
+export const Search = styled(DebounceInput)`
   margin: 20px;
   width: 70%;
   height: 30px;

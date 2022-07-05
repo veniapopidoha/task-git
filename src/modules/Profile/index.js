@@ -3,19 +3,22 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Back, Bio, Block, RepoBlock, Row, Search, Wrap } from './style';
 import { useLocation, useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
 
 export const Profile = () => {
   const [currentUser, setCurrentUser] = useState({});
-  const [repository, setRepository] = useState({});
+  const [filteredRepo, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingRepo, setLoadingRepo] = useState(true);
   const locationPage = useLocation();
+  const loadedRepos = useSelector((state) => state.allData);
+
   const navigate = useNavigate();
 
   const userLogin = new URLSearchParams(locationPage.search).get('login');
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const loadUser = async () => {
@@ -25,18 +28,9 @@ export const Profile = () => {
         headers,
       })
       .then((res) => setCurrentUser(res.data));
-    axios
-      .get(`https://api.github.com/users/${userLogin}/repos`, {
-        headers,
-      })
-      .then((res) => setRepository(res.data));
     setLoading(true);
   };
 
-  const currentUserInfo = {
-    repository: Array.from(repository),
-    currentUser: currentUser,
-  };
 
   const {
     avatar_url = '',
@@ -52,25 +46,9 @@ export const Profile = () => {
   const onFilter = async (input = '') => {
     const inputValue = input.target.value.toLowerCase();
     if (inputValue.length) {
-      setLoadingRepo(false);
-      await axios
-        .get(
-          `https://api.github.com/search/repositories?q=user:${userLogin}+${inputValue}+in:name`,
-          {
-            headers,
-          }
-        )
-        .then((response) => setRepository(response.data.items))
-        .catch((error) => console.error('Error: ' + error));
-    }
-    if (inputValue.length == 0) {
-      setLoadingRepo(false);
-      await axios
-        .get(`https://api.github.com/search/repositories?q=user:${userLogin}`, {
-          headers,
-        })
-        .then((response) => setRepository(response.data.items))
-        .catch((error) => console.error('Error: ' + error));
+      setFilteredUsers(
+        repo.filter((u) => u.name.toLowerCase().includes(inputValue))
+      );
     }
     setLoadingRepo(true);
   };
@@ -78,6 +56,14 @@ export const Profile = () => {
   useEffect(() => {
     loadUser();
   }, []);
+
+  var repo;
+  for (var i = 0; i < loadedRepos.length; i++) {
+    if (loadedRepos[i].login == userLogin) {
+      repo = loadedRepos[i].repo;
+      break;
+    }
+  }
 
   return (
     <Wrap>
@@ -102,17 +88,22 @@ export const Profile = () => {
       <RepoBlock>
         <div>
           <Search
+            minLength={1}
+            debounceTimeout={500}
             placeholder='Search for Repositories'
             onChange={onFilter}
             type='text'
           />
         </div>
         {loadingRepo == false && <h2>Loading...</h2>}
-        {loadingRepo &&
-          currentUserInfo.repository.map((repo = {}, index) => {
-            return <Repo key={index} repo={repo}></Repo>;
-          })}
-        {repository.length == 0 && <h2>There are no such repositories(</h2>}
+        {filteredRepo && filteredRepo.length
+          ? filteredRepo.map((repo = {}, index) => {
+              return <Repo key={index} repo={repo}></Repo>;
+            })
+          : repo.map((repo = {}, index) => {
+              return <Repo key={index} repo={repo}></Repo>;
+            })}
+        {repo.length == 0 && <h2>There are no such repositories(</h2>}
       </RepoBlock>
     </Wrap>
   );

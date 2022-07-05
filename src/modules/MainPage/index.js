@@ -13,7 +13,7 @@ export const MainPage = () => {
   const [isError, setIsError] = useState(false);
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const onFilter = async (input = '') => {
@@ -37,6 +37,7 @@ export const MainPage = () => {
     inputValueData(inputValue);
     setloading(false);
     if (inputValue.length) {
+      resetRepo();
       await axios
         .get(`https://api.github.com/search/users?q=${inputValue}`, {
           headers,
@@ -45,6 +46,10 @@ export const MainPage = () => {
         .catch((error) => checkError(error));
     }
     setloading(true);
+  };
+
+  const resetRepo = () => {
+    dispatch({ type: 'RESET_REPO', payload: [] });
   };
 
   return (
@@ -75,9 +80,10 @@ export const MainPage = () => {
           </div>
         )}
         {loadedInput == '' && <h1>Write something to search</h1>}
-        {loadedInput != '' && loadedUsers.length == 0 && loading && (
-          <h1>Ooops, there are no users with that name</h1>
-        )}
+        {loadedInput != '' &&
+          isError == false &&
+          loadedUsers.length == 0 &&
+          loading && <h1>Ooops, there are no users with that name</h1>}
         {isError == true && <h2>Something wrong with server conection</h2>}
       </InfoBlock>
     </Wrap>
