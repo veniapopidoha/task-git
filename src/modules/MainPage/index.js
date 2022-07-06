@@ -13,7 +13,7 @@ export const MainPage = () => {
   const [isError, setIsError] = useState(false);
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const onFilter = async (input = '') => {
@@ -37,20 +37,17 @@ export const MainPage = () => {
     inputValueData(inputValue);
     setloading(false);
     if (inputValue.length) {
-      resetRepo();
       await axios
-        .get(`https://api.github.com/search/users?q=${inputValue}`, {
-          headers,
-        })
-        .then((response) => loadedUsers(response.data.items))
-        .catch((error) => checkError(error));
+      .get(`https://api.github.com/search/users?q=${inputValue}`, {
+        headers,
+      })
+      .then((response) => loadedUsers(response.data.items))
+      .catch((error) => checkError(error));
     }
     setloading(true);
-  };
-
-  const resetRepo = () => {
     dispatch({ type: 'RESET_REPO', payload: [] });
   };
+
 
   return (
     <Wrap>

@@ -7,18 +7,19 @@ import { useSelector } from 'react-redux';
 
 export const Profile = () => {
   const [currentUser, setCurrentUser] = useState({});
-  const [filteredRepo, setFilteredUsers] = useState([]);
+  const [filteredRepo, setFilteredRepo] = useState([]);
+  const [allRepo, setAllRepo] = useState([]);
+  const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingRepo, setLoadingRepo] = useState(true);
   const locationPage = useLocation();
-  const loadedRepos = useSelector((state) => state.allData);
 
   const navigate = useNavigate();
 
   const userLogin = new URLSearchParams(locationPage.search).get('login');
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const loadUser = async () => {
@@ -28,9 +29,15 @@ export const Profile = () => {
         headers,
       })
       .then((res) => setCurrentUser(res.data));
+      axios
+      .get(
+        `https://api.github.com/users/${userLogin}/repos`,
+        {
+          headers,
+        })
+        .then((response) => setAllRepo(response.data))
     setLoading(true);
   };
-
 
   const {
     avatar_url = '',
@@ -45,25 +52,26 @@ export const Profile = () => {
 
   const onFilter = async (input = '') => {
     const inputValue = input.target.value.toLowerCase();
+    setInputValue(inputValue)
+    setLoadingRepo(false);
     if (inputValue.length) {
-      setFilteredUsers(
-        repo.filter((u) => u.name.toLowerCase().includes(inputValue))
-      );
+      await axios
+        .get(
+          `https://api.github.com/search/repositories?q=user:${userLogin}+${inputValue}+in:name`,
+          {
+            headers,
+          }
+        )
+        .then((response) => setFilteredRepo(response.data.items))
+        .catch((error) => console.error('Error: ' + error));
     }
     setLoadingRepo(true);
   };
+  console.log(filteredRepo);
 
   useEffect(() => {
     loadUser();
   }, []);
-
-  var repo;
-  for (var i = 0; i < loadedRepos.length; i++) {
-    if (loadedRepos[i].login == userLogin) {
-      repo = loadedRepos[i].repo;
-      break;
-    }
-  }
 
   return (
     <Wrap>
@@ -89,21 +97,23 @@ export const Profile = () => {
         <div>
           <Search
             minLength={1}
-            debounceTimeout={500}
+            debounceTimeout={800}
             placeholder='Search for Repositories'
             onChange={onFilter}
             type='text'
           />
         </div>
         {loadingRepo == false && <h2>Loading...</h2>}
-        {filteredRepo && filteredRepo.length
+        {loadingRepo && filteredRepo.length
           ? filteredRepo.map((repo = {}, index) => {
               return <Repo key={index} repo={repo}></Repo>;
             })
-          : repo.map((repo = {}, index) => {
+          : loadingRepo && inputValue.length == 0 && allRepo.map((repo = {}, index) => {
               return <Repo key={index} repo={repo}></Repo>;
             })}
-        {repo.length == 0 && <h2>There are no such repositories(</h2>}
+        {loadingRepo && filteredRepo.length == 0 && (
+          <h2>There are no such repositories(</h2>
+        )}
       </RepoBlock>
     </Wrap>
   );
