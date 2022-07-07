@@ -8,6 +8,7 @@ export const User = ({ user }) => {
   const loadedRepos = useSelector((state) => state.allData);
   const [userInfo, setUserInfo] = useState([]);
   const { login = '', avatar_url = '' } = user;
+
   const headers = {
     Authorization: 'token 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',
   };
@@ -15,7 +16,7 @@ export const User = ({ user }) => {
   const getFullData = () => {
     if (loadedRepos.length == 0) {
       axios
-        .get(`https://api.github.com/users/${login}/repos`, {
+        .get(`https://api.github.com/users/${login}`, {
           headers,
         })
         .then((response) => {
@@ -39,6 +40,7 @@ export const User = ({ user }) => {
     }
   };
 
+  const { public_repos = '' } = userInfo;
   useEffect(() => {
     getFullData();
   }, []);
@@ -49,7 +51,7 @@ export const User = ({ user }) => {
         <Icon src={avatar_url} />
         <Name>{login}</Name>
       </Wrapper>
-      <Repos>Repos: {userInfo.length}</Repos>
+      <Repos>Repos: {public_repos}</Repos>
     </Wrap>
   );
 };

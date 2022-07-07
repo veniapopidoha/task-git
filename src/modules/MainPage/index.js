@@ -30,7 +30,6 @@ export const MainPage = () => {
       console.error('Error: ', error);
       if (error) {
         setIsError(true);
-        console.log(isError);
       }
     };
     const inputValue = input.target.value.toLowerCase();
@@ -38,16 +37,15 @@ export const MainPage = () => {
     setloading(false);
     if (inputValue.length) {
       await axios
-      .get(`https://api.github.com/search/users?q=${inputValue}`, {
-        headers,
-      })
-      .then((response) => loadedUsers(response.data.items))
-      .catch((error) => checkError(error));
+        .get(`https://api.github.com/search/users?q=${inputValue}`, {
+          headers,
+        })
+        .then((response) => loadedUsers(response.data.items))
+        .catch((error) => checkError(error));
     }
     setloading(true);
     dispatch({ type: 'RESET_REPO', payload: [] });
   };
-
 
   return (
     <Wrap>
