@@ -9,7 +9,7 @@ export const User = ({ user }) => {
   const [userInfo, setUserInfo] = useState([]);
   const { login = '', avatar_url = '' } = user;
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const getFullData = () => {

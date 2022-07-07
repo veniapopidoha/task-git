@@ -13,7 +13,7 @@ export const MainPage = () => {
   const [isError, setIsError] = useState(false);
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const onFilter = async (input = '') => {

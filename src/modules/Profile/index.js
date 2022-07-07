@@ -19,7 +19,7 @@ export const Profile = () => {
   const userLogin = new URLSearchParams(locationPage.search).get('login');
 
   const headers = {
-    Authorization: 'token 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',
+    Authorization: 'token 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',
   };
 
   const loadUser = async () => {
@@ -65,6 +65,9 @@ export const Profile = () => {
         .then((response) => setFilteredRepo(response.data.items))
         .catch((error) => console.error('Error: ' + error));
     }
+    if(inputValue == '') {
+      setFilteredRepo(allRepo)
+    }
     setLoadingRepo(true);
   };
   console.log(filteredRepo);
@@ -101,17 +104,17 @@ export const Profile = () => {
             placeholder='Search for Repositories'
             onChange={onFilter}
             type='text'
-          />
+            />
         </div>
         {loadingRepo == false && <h2>Loading...</h2>}
         {loadingRepo && filteredRepo.length
           ? filteredRepo.map((repo = {}, index) => {
-              return <Repo key={index} repo={repo}></Repo>;
-            })
+            return <Repo key={index} repo={repo}></Repo>;
+          })
           : loadingRepo && inputValue.length == 0 && allRepo.map((repo = {}, index) => {
-              return <Repo key={index} repo={repo}></Repo>;
-            })}
-        {loadingRepo && filteredRepo.length == 0 && (
+            return <Repo key={index} repo={repo}></Repo>;
+          })}
+        {loading && loadingRepo && filteredRepo.length == 0 && (
           <h2>There are no such repositories(</h2>
         )}
       </RepoBlock>
