@@ -6,18 +6,18 @@ import { MainPage } from './modules/MainPage';
 import { Profile } from './modules/Profile';
 
 function App() {
-  const defaultState = {
+  const initialState = {
     input: '',
     loadedUsers: [],
     loadedRepos: [],
     allData: [],
   };
 
-  const reducer = (state = defaultState, action) => {
+  const reducer = (state = initialState, action) => {
     switch (action.type) {
-      case 'INPUT_VALUE':
+      case 'SET_INPUT_VALUE':
         return { ...state, input: action.payload };
-      case 'LOADED_USERS':
+      case 'ON_LOAD_USERS':
         return { ...state, loadedUsers: action.payload };
       case 'RESET_REPO':
         return { ...state, allData: action.payload };

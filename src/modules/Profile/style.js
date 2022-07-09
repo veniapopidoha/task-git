@@ -1,4 +1,5 @@
 import { DebounceInput } from 'react-debounce-input';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Wrap = styled.div`
@@ -46,7 +47,7 @@ export const RepoBlock = styled.div`
   overflow: scroll;
 `;
 
-export const Back = styled.button`
+export const Back = styled(Link)`
   position: absolute;
   top: 40px;
   left: 40px;

@@ -21,23 +21,20 @@ export const User = ({ user }) => {
         })
         .then((response) => {
           const repo = response.data;
+
           setUserInfo(repo);
-          const user = [{ login: login, repo: repo }];
+
+          const user = [{ login, repo }];
+
           if (loadedRepos.length < 60) {
             dispatch({ type: 'LOADED_REPO', payload: user });
           }
         });
-    } else {
-      if (loadedRepos.length > 0) {
-        var repo;
-        for (var i = 0; i < loadedRepos.length; i++) {
-          if (loadedRepos[i].login == login) {
-            setUserInfo(loadedRepos[i].repo);
-            break;
-          }
-        }
+    } else if (loadedRepos.length > 0) {
+        const repo = loadedRepos.find((repo => repo.login === login)?.repo)
+        
+        setUserInfo(repo)
       }
-    }
   };
 
   const { public_repos = '' } = userInfo;

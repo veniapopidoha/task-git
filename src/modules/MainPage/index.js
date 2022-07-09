@@ -7,9 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export const MainPage = () => {
   const dispatch = useDispatch();
-  const loadedInput = useSelector((state) => state.input);
+  const searchUsersInput = useSelector((state) => state.input);
   const loadedUsers = useSelector((state) => state.loadedUsers);
-  const [loading, setloading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const headers = {
@@ -17,24 +17,31 @@ export const MainPage = () => {
   };
 
   const onFilter = async (input = '') => {
+
     const inputValueData = (loadedInput) => {
-      dispatch({ type: 'INPUT_VALUE', payload: loadedInput });
-      if (loadedInput.length == 0) {
-        dispatch({ type: 'LOADED_USERS', payload: [] });
+      dispatch({ type: 'SET_INPUT_VALUE', payload: loadedInput });
+      if (loadedInput.length === 0) {
+        dispatch({ type: 'ON_LOAD_USERS', payload: [] });
       }
     };
+
     const loadedUsers = (users) => {
-      dispatch({ type: 'LOADED_USERS', payload: users });
+      dispatch({ type: 'ON_LOAD_USERS', payload: users });
     };
+
     const checkError = (error) => {
       console.error('Error: ', error);
       if (error) {
         setIsError(true);
       }
     };
+
     const inputValue = input.target.value.toLowerCase();
+
     inputValueData(inputValue);
-    setloading(false);
+
+    setIsLoading(true);
+
     if (inputValue.length) {
       await axios
         .get(`https://api.github.com/search/users?q=${inputValue}`, {
@@ -43,7 +50,9 @@ export const MainPage = () => {
         .then((response) => loadedUsers(response.data.items))
         .catch((error) => checkError(error));
     }
-    setloading(true);
+
+    setIsLoading(false);
+
     dispatch({ type: 'RESET_REPO', payload: [] });
   };
 
@@ -57,29 +66,29 @@ export const MainPage = () => {
             placeholder='Search for User'
             onChange={onFilter}
             type='text'
-            value={loadedInput}
+            value={searchUsersInput}
           />
         </div>
-        {loading == false && loadedInput != '' && <h1>loading...</h1>}
-        {loading && (
+        {isLoading && searchUsersInput !== '' && <h1>loading...</h1>}
+        {!isLoading && (
           <div>
             {loadedUsers.map((user = {}, index) => {
               return (
                 <React.Fragment key={index}>
                   <StyledLink to={`/profile?login=${user.login}`}>
-                    <User user={user}></User>
+                    <User user={user}/>
                   </StyledLink>
                 </React.Fragment>
               );
             })}
           </div>
         )}
-        {loadedInput == '' && <h1>Write something to search</h1>}
-        {loadedInput != '' &&
-          isError == false &&
-          loadedUsers.length == 0 &&
-          loading && <h1>Ooops, there are no users with that name</h1>}
-        {isError == true && <h2>Something wrong with server conection</h2>}
+        {searchUsersInput === '' && <h1>Write something to search</h1>}
+        {searchUsersInput !== '' &&
+          isError === false &&
+          loadedUsers.length === 0 &&
+          !isLoading && <h1>Ooops, there are no users with that name</h1>}
+        {isError === true && <h2>Something wrong with server conection</h2>}
       </InfoBlock>
     </Wrap>
   );

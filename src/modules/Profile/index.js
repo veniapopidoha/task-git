@@ -2,19 +2,16 @@ import { Repo } from '../Repo';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Back, Bio, Block, RepoBlock, Row, Search, Wrap } from './style';
-import { useLocation, useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
 
 export const Profile = () => {
   const [currentUser, setCurrentUser] = useState({});
   const [filteredRepo, setFilteredRepo] = useState([]);
   const [allRepo, setAllRepo] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [loadingRepo, setLoadingRepo] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingRepo, setLoadingRepo] = useState(false);
   const locationPage = useLocation();
-
-  const navigate = useNavigate();
 
   const userLogin = new URLSearchParams(locationPage.search).get('login');
 
@@ -23,18 +20,21 @@ export const Profile = () => {
   };
 
   const loadUser = async () => {
-    setLoading(false);
+    setLoading(true);
+
     await axios
       .get(`https://api.github.com/users/${userLogin}`, {
         headers,
       })
       .then((res) => setCurrentUser(res.data));
-    await axios
-      .get(`https://api.github.com/users/${userLogin}/repos`, {
-        headers,
-      })
-      .then((response) => setAllRepo(response.data));
-    setLoading(true);
+      await axios
+      .get(
+        `https://api.github.com/users/${userLogin}/repos`,
+        {
+          headers,
+        })
+        .then((response) => setAllRepo(response.data))
+    setLoading(false);
   };
 
   const {
@@ -50,23 +50,26 @@ export const Profile = () => {
 
   const onFilter = async (input = '') => {
     const inputValue = input.target.value.toLowerCase();
-    setInputValue(inputValue);
-    setLoadingRepo(false);
+
+    setInputValue(inputValue)
+
+    setLoadingRepo(true);
+
     if (inputValue.length) {
       await axios
         .get(
           `https://api.github.com/search/repositories?q=user:${userLogin}+is:public+${inputValue}in:name`,
           {
             headers,
-          }
-        )
+          })
         .then((response) => setFilteredRepo(response.data.items))
         .catch((error) => console.error('Error: ' + error));
-      setLoadingRepo(true);
+        setLoadingRepo(false);
     }
-    if (inputValue == '') {
-      setFilteredRepo(allRepo);
-      setLoadingRepo(true);
+    if(inputValue == '') {
+      setFilteredRepo(allRepo)
+
+      setLoadingRepo(false);
     }
   };
 
@@ -76,9 +79,9 @@ export const Profile = () => {
 
   return (
     <Wrap>
-      <Back onClick={() => navigate(-1)}>Go Back</Back>
-      {loading == false && <h2>Loading...</h2>}
-      {loading && (
+      <Back to="/">Go Back</Back>
+      {loading && <h2>Loading...</h2>}
+      {!loading && (
         <Row>
           <div>
             <img src={avatar_url} width='200px' />
@@ -102,19 +105,17 @@ export const Profile = () => {
             placeholder='Search for Repositories'
             onChange={onFilter}
             type='text'
-          />
+            />
         </div>
-        {loadingRepo == false && <h2>Loading...</h2>}
-        {loadingRepo && filteredRepo.length
+        {loadingRepo && <h2>Loading...</h2>}
+        {!loadingRepo && filteredRepo.length
           ? filteredRepo.map((repo = {}, index) => {
-              return <Repo key={index} repo={repo}></Repo>;
-            })
-          : loadingRepo &&
-            inputValue.length == 0 &&
-            allRepo.map((repo = {}, index) => {
-              return <Repo key={index} repo={repo}></Repo>;
-            })}
-        {loading && loadingRepo && filteredRepo == 0 && (
+            return <Repo key={index} repo={repo}/>;
+          })
+          : !loadingRepo && inputValue.length === 0 && allRepo.map((repo = {}, index) => {
+            return <Repo key={index} repo={repo}/>;
+          })}
+        {!loading && !loadingRepo && filteredRepo === 0 && (
           <h2>There are no such repositories(</h2>
         )}
       </RepoBlock>
